@@ -5,22 +5,47 @@
     //Required. Inputs the module expects.
     "inputs": [
         //e.g.
-        /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "idList",
+            "title":"List ID"
         }
-        */
     ],
     //Required. Outputs the module emits.
     "outputs": [
       //e.g.
-      /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "dateLastActivity",
+            "title":"Last Activity"
+        },
+        {
+            "id": "due",
+            "title":"Due Date"
+        },
+        {
+            "id": "email",
+            "title": "Email"
+        },
+        {
+            "id": "idBoard",
+            "title":"Board ID"
+        },
+        {
+            "id": "idList",
+            "title":"List ID"
+        },
+        {
+            "id": "name",
+            "title":"Name"
+        },
+        {
+            "id": "shortLink",
+            "title":"Short Link"
+        },
+        {
+            "id": "ukr",
+            "title":"URL"
         }
-      */
     ],
+    "icon": "trello",
     "title": "Trello Get Cards on List" /* Required.A display name for the module */
 }
