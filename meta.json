@@ -46,6 +46,10 @@
             "title":"URL"
         }
     ],
+    "providers": [{
+        "name": "trello",
+        "scopes": [ "Read" ]
+    }],
     "icon": "trello",
     "title": "Trello Get Cards on List" /* Required.A display name for the module */
 }

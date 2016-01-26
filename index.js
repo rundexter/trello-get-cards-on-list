@@ -2,36 +2,20 @@ var trello = require('node-trello'),
     _ = require('lodash'),
     util = require('./util'),
     pickInputs = {
-        "idList": "idList"
+        idList: { key: 'idList', validate: { req: true } }
     },
     pickOutputs = {
-        '-': {
-            keyName: 'data',
-            fields: {
-                dateLastActivity: 'dateLastActivity',
-                due: 'due',
-                email: 'email',
-                idBoard: 'idBoard',
-                idList: 'idList',
-                name: 'name',
-                shortLink: 'shortLink',
-                url: 'url'
-            }
-        }
+        dateLastActivity: { key: 'data', fields: ['dateLastActivity'] },
+        due: { key: 'data', fields: ['due'] },
+        email: { key: 'data', fields: ['email'] },
+        idBoard: { key: 'data', fields: ['idBoard'] },
+        idList: { key: 'data', fields: ['idList'] },
+        name: { key: 'data', fields: ['name'] },
+        shortLink: { key: 'data', fields: ['shortLink'] },
+        url: { key: 'data', fields: ['url'] }
     };
 
 module.exports = {
-    authOptions: function (dexter) {
-        if (!dexter.environment('trello_api_key') || !dexter.environment('trello_token')) {
-            this.fail('A [trello_api_key] or [trello_token] environment variables are required for this module');
-            return false;
-        } else {
-            return {
-                api_key: dexter.environment('trello_api_key'),
-                token: dexter.environment('trello_token')
-            }
-        }
-    },
     /**
      * The main entry point for the Dexter module
      *
@@ -39,25 +23,19 @@ module.exports = {
      * @param {AppData} dexter Container for all data used in this workflow.
      */
     run: function(step, dexter) {
-        var auth = this.authOptions(dexter);
+        var credentials = dexter.provider('trello').credentials(),
+            t = new trello(_.get(credentials, 'consumer_key'), _.get(credentials, 'access_token'));
+        var inputs = util.pickInputs(step, pickInputs),
+            validationErrors = util.checkValidateErrors(inputs, pickInputs);
 
-        if (!auth) return;
+        if (validationErrors)
+            return this.fail(validationErrors);
 
-        var t = new trello(auth.api_key, auth.token);
-        var inputs = util.pickStringInputs(step, pickInputs);
-
-        if (_.isEmpty(inputs.idList)) {
-            return this.fail('A [idList] variable is required for this module');
-        } else {
-            var listId = inputs.idList;
-        }
-
-        t.get("1/lists/" + listId + "/cards", function(err, data) {
-            if (!err) {
-                this.complete(util.pickResult({data: data}, pickOutputs));
-            } else {
+        t.get("1/lists/" + inputs.idList + "/cards", function(err, data) {
+            if (!err)
+                this.complete(util.pickOutputs({data: data}, pickOutputs));
+            else
                 this.fail(err);
-            }
         }.bind(this));
     }
 };
